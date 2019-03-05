@@ -5,8 +5,8 @@ class User
   def self.player_search_input
     p "Enter the first and last name of your favorite player and hit enter to search."
     user_input = gets.chomp
-    user_input.split(" ")
-    p user_input ## just for testing
+    user_input.split(" ").to_a
+    #p user_input ## just for testing
     ###PUT IN ERROR HANDLING FOR USER INPUT and validation
     ##QUERY API FOR PLAYERS LIST TO ENSURE VALID
   end

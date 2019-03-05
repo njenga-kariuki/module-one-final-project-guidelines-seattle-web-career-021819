@@ -13,4 +13,6 @@ p "Welcome to NBA Player Stat Tracker!"
 sleep 1
 p "We allow you to view your favorites players latest stats from any game."
 sleep 1
-User.full_user_input_and_search
+player_query = User.full_user_input_and_search
+
+Player.search_player_api_for_id(player_query)

@@ -6,3 +6,5 @@ gem "sqlite3"
 gem "pry"
 gem "require_all"
 gem 'rake'
+gem "rest-client"
+gem "json"
