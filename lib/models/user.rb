@@ -18,7 +18,7 @@ class User
       api_player_search[:first_name] = user_input[0]
       api_player_search[:last_name] = user_input[1]
     end
-    p api_player_search ## for testing
+    api_player_search ## for testing
   end
 
   ##combines methods to take user input to search player and return correct format for API search
