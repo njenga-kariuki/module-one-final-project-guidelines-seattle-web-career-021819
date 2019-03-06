@@ -22,6 +22,5 @@ binding.pry
     else
       player_id
     end
-
   end
 end
