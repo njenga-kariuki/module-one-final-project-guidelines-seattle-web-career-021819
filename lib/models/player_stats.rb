@@ -1,29 +1,53 @@
-class PlayerStat
-#define API call to treutn a players stats
+class PlayerStat < ActiveRecord::Base
+#define API call to return a players stats and sort them from ost recent game
   def self.search_stats_by_player_id(player_id)
     response_string = RestClient.get("https://www.balldontlie.io/api/v1/stats?seasons[]=2018&player_ids[]=#{player_id}&per_page=500")
-    response_hash = JSON.parse(response_string)
+    player_stats = JSON.parse(response_string)["data"]
 
-    latest_game_hash = {}
-    latest_game_hash[:ast] = response_hash["data"][0]["ast"]
-    latest_game_hash[:blk] = response_hash["data"][0]["blk"]
-    latest_game_hash[:pts] = response_hash["data"][0]["pts"]
-    latest_game_hash[:reb] = response_hash["data"][0]["reb"]
-    latest_game_hash[:stl] = response_hash["data"][0]["stl"]
-    puts latest_game_hash
+    player_stats_sorted = player_stats.sort_by {|game|
+      -game["id"]}
+
+    player_stats_sorted
   end
 
-#   def latest_game_stats(dataset)
-#     latest_game_hash = {}
-#     latest_game_hash[:ast] = dataset["data"][0]["ast"]
-#     latest_game_hash[:blk] = dataset["data"][0]["blk"]
-#     latest_game_hash[:pts] = dataset["data"][0]["pts"]
-#     latest_game_hash[:reb] = dataset["data"][0]["reb"]
-#     latest_game_hash[:stl] = dataset["data"][0]["stl"]
-#   end
-#
-#   def show_latest_game_stats
-#     dataset = self.
-#   end
-#
+  #takes in sorted game stats of a player and prints latest game
+  def self.show_latest_game_stats(player_stats)
+    p "last game stats:"
+    latest_game = {}
+    latest_game[:pts] = player_stats[0]["pts"]
+    latest_game[:ast] = player_stats[0]["ast"]
+    latest_game[:reb] = player_stats[0]["reb"]
+    latest_game[:stl] = player_stats[0]["stl"]
+    latest_game[:blk] = player_stats[0]["blk"]
+
+    p latest_game
+  end
+
+  #iterate through season stats, calc season averages, print them
+  def self.season_game_stats(player_stats)
+    p "season stats:"
+    season_stats = {}
+    num_of_games = player_stats.count
+    pts = 0
+    ast = 0
+    reb = 0
+    stl = 0
+    blk = 0
+
+    player_stats.each do |game|
+      pts += game["pts"] unless game["pts"] == nil
+      ast += game["ast"] unless game["ast"] == nil
+      reb += game["reb"] unless game["reb"] == nil
+      stl += game["stl"] unless game["stl"] == nil
+      blk += game["blk"] unless game["blk"] == nil
+
+    end
+    season_stats[:pts] = (pts/num_of_games.to_f).round(1)
+    season_stats[:ast] = (ast/num_of_games.to_f).round(1)
+    season_stats[:reb] = (reb/num_of_games.to_f).round(1)
+    season_stats[:stl] = (stl/num_of_games.to_f).round(1)
+    season_stats[:blk] = (blk/num_of_games.to_f).round(1)
+
+    p season_stats
+  end
 end

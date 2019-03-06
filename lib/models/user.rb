@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  has_many :user_players
+  has_many :players, through: :user_players
   #each user has a first and last name
 
   #CLI player search: enable user to serach for a given player and retreive latest game status
@@ -7,9 +9,6 @@ class User < ActiveRecord::Base
     p "Enter the first and last name of your favorite player and hit enter to search."
     user_input = gets.chomp
     user_input.split(" ").to_a
-    #p user_input ## just for testing
-    ###PUT IN ERROR HANDLING FOR USER INPUT and validation
-    ##QUERY API FOR PLAYERS LIST TO ENSURE VALID
   end
 
   #formats player_search_input into hash for API search
@@ -28,9 +27,8 @@ class User < ActiveRecord::Base
     format_player_api_search(input)
   end
 
-  ##main menu: find or create user
+  ###collects user input for first and last name
   def self.user_authentication
-    #collects user input for first and last name
     p "Please enter your first name:"
     user_input_first_name = gets.chomp.capitalize
     p "and your last name:"
@@ -56,7 +54,7 @@ class User < ActiveRecord::Base
     user_input = gets.chomp.to_i
 
     case user_input
-    when 1 # creating a new user before linking to fav dash
+    when 1
       User.new(first_name: first_name, last_name: last_name).save
       p "Welcome to the team, #{user_input_first_name}!"
       user_tracked_players
