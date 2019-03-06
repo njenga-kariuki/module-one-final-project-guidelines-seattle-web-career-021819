@@ -62,8 +62,7 @@ class User < ActiveRecord::Base
       player_query = self.full_user_input_and_search
       player_id = Player.search_player_api_return_id(player_query)
       sorted_player_data = PlayerStat.search_stats_by_player_id(player_id)
-      PlayerStat.show_latest_game_stats(sorted_player_data)
-      PlayerStat.season_game_stats(sorted_player_data)
+      PlayerStat.combined_stats(sorted_player_data)
       self.loop_search
     end
   end
@@ -76,8 +75,7 @@ class User < ActiveRecord::Base
       player_query = self.full_user_input_and_search
       player_id = Player.search_player_api_return_id(player_query)
       sorted_player_data = PlayerStat.search_stats_by_player_id(player_id)
-      PlayerStat.show_latest_game_stats(sorted_player_data)
-      PlayerStat.season_game_stats(sorted_player_data)
+      PlayerStat.combined_stats(sorted_player_data)
       self.loop_search
     when 2
       p "goodbye"
@@ -123,8 +121,7 @@ class User < ActiveRecord::Base
       player_hash[:last_name] = lookup_player.last_name
       player_num =  Player.search_player_api_return_id(player_hash)
       sorted_data = PlayerStat.search_stats_by_player_id(player_num)
-      PlayerStat.show_latest_game_stats(sorted_data)
-      PlayerStat.season_game_stats(sorted_data)
+      PlayerStat.combined_stats(sorted_data)
     end
   end
 end
