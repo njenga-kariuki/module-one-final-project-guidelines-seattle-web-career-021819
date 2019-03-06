@@ -12,12 +12,7 @@ class Player < ActiveRecord::Base
     player["last_name"].downcase == player_name[:last_name].downcase
   end
 
-  player_id = player_hash[0]["id"]
-
-    if player_id == nil
-      "Sorry, we could not find your player.Please ensure spelling is accurate."
-    else
-      player_id
-    end
+  player_id = player_hash[0]["id"] unless player_hash.count == 0
+  player_id
   end
 end

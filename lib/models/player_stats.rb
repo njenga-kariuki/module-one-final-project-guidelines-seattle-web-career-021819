@@ -13,7 +13,7 @@ class PlayerStat < ActiveRecord::Base
   ##Combines last game and season stats and prints as a table
   def self.combined_stats(player_stats)
     player_name = "#{player_stats[0]["player"]["first_name"]} #{player_stats[0]["player"]["last_name"]}"
-    p "last game stats for #{player_name}:"
+    p "Latest stats for #{player_name}:"
     game_data = {}
     game_data[:pts] = [player_stats[0]["pts"]]
     game_data[:ast] = [player_stats[0]["ast"]]
