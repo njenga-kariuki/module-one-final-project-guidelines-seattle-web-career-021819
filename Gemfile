@@ -8,3 +8,6 @@ gem "require_all"
 gem 'rake'
 gem "rest-client"
 gem "json"
+gem "awesome_print"
+gem "table_print"
+gem "terminal-table"

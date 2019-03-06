@@ -10,23 +10,17 @@ class PlayerStat < ActiveRecord::Base
     player_stats_sorted
   end
 
-  #takes in sorted game stats of a player and prints latest game
-  def self.show_latest_game_stats(player_stats)
-    p "last game stats:"
-    latest_game = {}
-    latest_game[:pts] = player_stats[0]["pts"]
-    latest_game[:ast] = player_stats[0]["ast"]
-    latest_game[:reb] = player_stats[0]["reb"]
-    latest_game[:stl] = player_stats[0]["stl"]
-    latest_game[:blk] = player_stats[0]["blk"]
+  ##Combines last game and season stats and prints as a table
+  def self.combined_stats(player_stats)
+    player_name = "#{player_stats[0]["player"]["first_name"]} #{player_stats[0]["player"]["last_name"]}"
+    p "last game stats for #{player_name}:"
+    game_data = {}
+    game_data[:pts] = [player_stats[0]["pts"]]
+    game_data[:ast] = [player_stats[0]["ast"]]
+    game_data[:reb] = [player_stats[0]["reb"]]
+    game_data[:stl] = [player_stats[0]["stl"]]
+    game_data[:blk] = [player_stats[0]["blk"]]
 
-    p latest_game
-  end
-
-  #iterate through season stats, calc season averages, print them
-  def self.season_game_stats(player_stats)
-    p "season stats:"
-    season_stats = {}
     num_of_games = player_stats.count
     pts = 0
     ast = 0
@@ -42,12 +36,20 @@ class PlayerStat < ActiveRecord::Base
       blk += game["blk"] unless game["blk"] == nil
 
     end
-    season_stats[:pts] = (pts/num_of_games.to_f).round(1)
-    season_stats[:ast] = (ast/num_of_games.to_f).round(1)
-    season_stats[:reb] = (reb/num_of_games.to_f).round(1)
-    season_stats[:stl] = (stl/num_of_games.to_f).round(1)
-    season_stats[:blk] = (blk/num_of_games.to_f).round(1)
+    game_data[:pts] << (pts/num_of_games.to_f).round(1)
+    game_data[:ast] << (ast/num_of_games.to_f).round(1)
+    game_data[:reb] << (reb/num_of_games.to_f).round(1)
+    game_data[:stl] << (stl/num_of_games.to_f).round(1)
+    game_data[:blk] << (blk/num_of_games.to_f).round(1)
 
-    p season_stats
+    data_table = Terminal::Table.new :headings =>['Stat','Last Game','Season'] do |t|
+      t.add_row ["Points", game_data[:pts][0],game_data[:pts][1]]
+      t.add_row ["Assists", game_data[:ast][0],game_data[:ast][1]]
+      t.add_row ["Rebounds", game_data[:reb][0],game_data[:reb][1]]
+      t.add_row ["Steals", game_data[:stl][0],game_data[:stl][1]]
+      t.add_row ["Blocks", game_data[:blk][0],game_data[:blk][1]]
+      t.style = {:all_separators => true}
+      end
+      puts data_table
   end
 end
