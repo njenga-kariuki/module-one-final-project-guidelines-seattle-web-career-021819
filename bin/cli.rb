@@ -15,4 +15,6 @@ p "We allow you to view your favorites players latest stats from any game."
 sleep 1
 player_query = User.full_user_input_and_search
 
-Player.search_player_api_return_id(player_query)
+player_id = Player.search_player_api_return_id(player_query)
+
+PlayerStat.search_stats_by_player_id(player_id)
