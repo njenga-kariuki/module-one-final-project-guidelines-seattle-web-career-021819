@@ -37,7 +37,7 @@ class User < ActiveRecord::Base
 
     if User.find_by(first_name: user_input_first_name, last_name: user_input_last_name) != nil
       p 'Welcome back!'
-      user_tracked_players
+      p "end"
     else
       self.new_user_option_flow(user_input_first_name, user_input_last_name)
     end
@@ -55,20 +55,56 @@ class User < ActiveRecord::Base
 
     case user_input
     when 1
-      User.new(first_name: first_name, last_name: last_name).save
-      p "Welcome to the team, #{user_input_first_name}!"
-      user_tracked_players
+      current_user = User.create(first_name: first_name, last_name: last_name)
+      p "Welcome to the team, #{first_name}!"
+      current_user.add_favorite_player
     when 2
-      user_tracked_players
+      p "end"
     end
   end
 
-  #dashboard to show favorite players for a new user;
-  def user_tracked_players
+  #method that asks new or existing users to start tracking Players
+  def add_favorite_player
+    player_name = User.full_user_input_and_search
+    track_player = Player.create(first_name: player_name[:first_name], last_name: player_name[:last_name])
+    UserPlayer.create(user_id:self.id, player_id:track_player.id)
+    p "We've added #{track_player.first_name} #{track_player.last_name} to your queue!"
+    p "Enter 1 to add more players, 2 to view stats, 3 to exit"
+    loop_favorite_player
+  end
 
-    p "Dashboard not yet created!"
-    #User_Player.where(user_id: self.id).pluck(:player_id)
-    ##need a method to pass players id and return stats
+  #after a user adds one player, a loop to let them add more
+  def loop_favorite_player
+    user_input = gets.chomp.to_i
+    case user_input
+    when 1
+      self.add_favorite_player
+    when 2
+      p self.user_tracked_players
+    when 3
+      p "goodbye"
+      exit
+    end
+  end
+
+  #dashboard to show favorite players for an existing user
+  def user_tracked_players
+    #query the userplayer table and loop through
+    test = UserPlayer.where(user_id:self.id).pluck(:player_id)
+
+    test.each do |player_id|
+      lookup_player = Player.find_by(id:player_id)
+      puts lookup_player.class
+      player_hash = {}
+      player_hash[:first_name] = lookup_player.first_name
+      player_hash[:last_name] = lookup_player.last_name
+      player_num =  Player.search_player_api_return_id(player_hash)
+      sorted_data = PlayerStat.search_stats_by_player_id(player_num)
+      PlayerStat.show_latest_game_stats(sorted_data)
+      PlayerStat.season_game_stats(sorted_data)
+    end
+
+
   end
 
 
