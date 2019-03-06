@@ -22,6 +22,5 @@ class Player
     else
       player_id
     end
-
   end
 end
