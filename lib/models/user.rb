@@ -33,11 +33,11 @@ class User < ActiveRecord::Base
     user_input_first_name = gets.chomp.capitalize
     p "and your last name:"
     user_input_last_name = gets.chomp.capitalize
-    p " Thanks #{user_input_first_name} #{user_input_last_name}!"
 
-    if User.find_by(first_name: user_input_first_name, last_name: user_input_last_name) != nil
-      p 'Welcome back!'
-      p "end"
+    current_user = User.find_by(first_name: user_input_first_name, last_name: user_input_last_name)
+    if current_user != nil
+      p "Welcome back #{current_user.first_name}!"
+      current_user.user_tracked_players
     else
       self.new_user_option_flow(user_input_first_name, user_input_last_name)
     end
@@ -59,9 +59,32 @@ class User < ActiveRecord::Base
       p "Welcome to the team, #{first_name}!"
       current_user.add_favorite_player
     when 2
-      p "end"
+      player_query = self.full_user_input_and_search
+      player_id = Player.search_player_api_return_id(player_query)
+      sorted_player_data = PlayerStat.search_stats_by_player_id(player_id)
+      PlayerStat.show_latest_game_stats(sorted_player_data)
+      PlayerStat.season_game_stats(sorted_player_data)
+      self.loop_search
     end
   end
+
+  def self.loop_search
+    p "Enter 1 to search another player or 2 to exit"
+    user_input = gets.chomp.to_i
+    case user_input
+    when 1
+      player_query = self.full_user_input_and_search
+      player_id = Player.search_player_api_return_id(player_query)
+      sorted_player_data = PlayerStat.search_stats_by_player_id(player_id)
+      PlayerStat.show_latest_game_stats(sorted_player_data)
+      PlayerStat.season_game_stats(sorted_player_data)
+      self.loop_search
+    when 2
+      p "goodbye"
+      exit
+    end
+  end
+
 
   #method that asks new or existing users to start tracking Players
   def add_favorite_player
@@ -103,9 +126,5 @@ class User < ActiveRecord::Base
       PlayerStat.show_latest_game_stats(sorted_data)
       PlayerStat.season_game_stats(sorted_data)
     end
-
-
   end
-
-
 end
