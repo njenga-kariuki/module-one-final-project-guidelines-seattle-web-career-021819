@@ -32,3 +32,5 @@ User.user_authentication
 # PlayerStat.show_latest_game_stats(sorted_player_data)
 #
 # PlayerStat.season_game_stats(sorted_player_data)
+
+#PlayerStat.player_news

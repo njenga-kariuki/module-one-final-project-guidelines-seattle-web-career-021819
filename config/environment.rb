@@ -5,6 +5,6 @@ ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: 'db/develo
 require_all 'lib'
 
 #Pry::ColorPrinter.pp(obj)
-#ActiveRecord::Base.logger = nil # gets rid of SQL statement
+ActiveRecord::Base.logger = nil # gets rid of SQL statement
 
 require 'open-uri'
