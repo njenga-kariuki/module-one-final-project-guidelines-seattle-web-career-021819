@@ -11,4 +11,5 @@ gem "json"
 gem "awesome_print"
 gem "table_print"
 gem "terminal-table"
-gem "news-api"
+gem "colorize"
+
