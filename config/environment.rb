@@ -6,3 +6,5 @@ require_all 'lib'
 
 #Pry::ColorPrinter.pp(obj)
 #ActiveRecord::Base.logger = nil # gets rid of SQL statement
+
+require 'open-uri'
