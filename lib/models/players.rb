@@ -31,4 +31,19 @@ class Player < ActiveRecord::Base
   team_id = player_hash[0]["team"]["id"] unless player_hash.count == 0
   team_id
   end
+
+  #gets all players for a team
+  def get_all_team_players(team_id)
+    response_string = RestClient.get("https://www.balldontlie.io/api/v1/players?&per_page=3100")
+    player_array = JSON.parse(response_string)
+
+    team_player_ids = []
+    player_array.each do |player|
+      if player["team"]["id"] == team_id
+        team_player_ids << player["id"]
+      end
+    end
+    team_player_ids
+  end
+
 end
