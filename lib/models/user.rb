@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   #CLI player search: enable user to serach for a given player and retreive latest game status
 
   def self.player_search_input
-    p "Enter the first and last name of your favorite player and hit enter to search."
+    p "Enter the first and last name of the player you want to track."
     user_input = gets.chomp
     user_input.split(" ").to_a
   end
@@ -61,9 +61,14 @@ class User < ActiveRecord::Base
     when 2
       player_query = self.full_user_input_and_search
       player_id = Player.search_player_api_return_id(player_query)
+      if player_id == nil
+        p "Sorry invalid player name"
+        self.loop_search
+      else
       sorted_player_data = PlayerStat.search_stats_by_player_id(player_id)
       PlayerStat.combined_stats(sorted_player_data)
       self.loop_search
+      end
     end
   end
 
@@ -74,9 +79,14 @@ class User < ActiveRecord::Base
     when 1
       player_query = self.full_user_input_and_search
       player_id = Player.search_player_api_return_id(player_query)
-      sorted_player_data = PlayerStat.search_stats_by_player_id(player_id)
-      PlayerStat.combined_stats(sorted_player_data)
-      self.loop_search
+        if player_id == nil
+          p "Sorry invalid player name"
+          self.loop_search
+        else
+          sorted_player_data = PlayerStat.search_stats_by_player_id(player_id)
+          PlayerStat.combined_stats(sorted_player_data)
+          self.loop_search
+        end
     when 2
       p "goodbye"
       exit
@@ -113,15 +123,52 @@ class User < ActiveRecord::Base
     #query the userplayer table and loop through
     test = UserPlayer.where(user_id:self.id).pluck(:player_id)
 
-    test.each do |player_id|
-      lookup_player = Player.find_by(id:player_id)
-      puts lookup_player.class
-      player_hash = {}
-      player_hash[:first_name] = lookup_player.first_name
-      player_hash[:last_name] = lookup_player.last_name
-      player_num =  Player.search_player_api_return_id(player_hash)
-      sorted_data = PlayerStat.search_stats_by_player_id(player_num)
-      PlayerStat.combined_stats(sorted_data)
+    if test.count == 0
+      p "You are not tracking any player yet. Let's fix that!"
+        self.add_favorite_player
+    else
+      test.each do |player_id|
+        lookup_player = Player.find_by(id:player_id)
+        puts lookup_player.class
+        player_hash = {}
+        player_hash[:first_name] = lookup_player.first_name
+        player_hash[:last_name] = lookup_player.last_name
+        player_num =  Player.search_player_api_return_id(player_hash)
+        sorted_data = PlayerStat.search_stats_by_player_id(player_num)
+        PlayerStat.combined_stats(sorted_data)
+      end
+      self.user_option_menu
+    end
+  end
+
+  #enable a user to delete from tracked_list
+  def deleted_a_favorite_tracked_player
+    p "To delete one of your tracked players, please enter the number next to the player's name:"
+
+    self.players.each_with_index do |player,index|
+      p "#{player.first_name} #{player.last_name} - #{index+1}"
+    end
+
+    user_input = (gets.chomp.to_i) - 1
+    delete_player = self.players[user_input-1]
+
+    UserPlayer.find_by(user_id: self.id, player_id: delete_player.id).delete
+
+    p "Deleted!"
+    self.user_option_menu
+  end
+
+  #method that shows menu options after users view stats
+  def user_option_menu
+    p "Enter one of the following numbers:  1 - Add Tracked Player, 2 - Delete Tracked Player, 3- Exit"
+    user_input = gets.chomp.to_i
+    case user_input
+    when 1
+      self.add_favorite_player
+    when 2
+      self.deleted_a_favorite_tracked_player
+    when 3
+      p "Thanks, Goodbye!"
     end
   end
 end
