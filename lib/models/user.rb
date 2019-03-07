@@ -150,7 +150,7 @@ class User < ActiveRecord::Base
     end
 
     user_input = (gets.chomp.to_i) - 1
-    delete_player = self.players[user_input-1]
+    delete_player = self.players[user_input]
 
     UserPlayer.find_by(user_id: self.id, player_id: delete_player.id).delete
 
