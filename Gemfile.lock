@@ -28,6 +28,7 @@ GEM
     mime-types-data (3.2018.0812)
     minitest (5.10.1)
     netrc (0.11.0)
+    news-api (0.0.0)
     pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -68,6 +69,7 @@ PLATFORMS
 DEPENDENCIES
   awesome_print
   json
+  news-api
   pry
   rake
   require_all
