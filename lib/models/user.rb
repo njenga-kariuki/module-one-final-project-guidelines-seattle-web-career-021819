@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
 
   #CLI player search: enable user to serach for a given player and retreive latest game status
   def self.player_search_input
-    puts "Enter the first and last name of the player you want to track"
+    puts "Enter the first and last name of the player you want to track:"
     user_input = gets.chomp
     user_input.split(" ").to_a
   end
@@ -70,6 +70,8 @@ class User < ActiveRecord::Base
           PlayerStat.combined_stats(sorted_player_data)
           team_num =  Player.search_player_api_return_team_id(player_query)
           PlayerStat.player_team_record(team_num)
+          player_id_array = Player.get_all_team_player_ids(team_num)
+          PlayerStat.rank_player_against_team(player_id_array,player_id)
           self.loop_search
         end
     end
@@ -95,6 +97,8 @@ class User < ActiveRecord::Base
           PlayerStat.combined_stats(sorted_player_data)
           team_num =  Player.search_player_api_return_team_id(player_query)
           PlayerStat.player_team_record(team_num)
+          player_id_array = Player.get_all_team_player_ids(team_num)
+          PlayerStat.rank_player_against_team(player_id_array,player_id)
           self.loop_search
         end
     when 2
@@ -109,11 +113,13 @@ class User < ActiveRecord::Base
     player_name = User.full_user_input_and_search
     player_id = Player.search_player_api_return_id(player_name)
       if player_id == nil
+        system "clear"
         puts "Sorry invalid player name!".red.blink
         self.add_favorite_player
       else
         track_player = Player.create(first_name: player_name[:first_name], last_name: player_name[:last_name])
         UserPlayer.create(user_id:self.id, player_id:track_player.id)
+        system "clear"
         puts "We've added #{track_player.first_name} #{track_player.last_name} to your queue!"
         puts "Enter one of the following numbers:
           1 - Add more players
@@ -184,8 +190,8 @@ class User < ActiveRecord::Base
   #method that shows menu options after users view stats
   def user_option_menu
     puts "Enter one of the following numbers:
-      1 - Add Tracked Player
-      2 - Delete Tracked Player
+      1 - Add player
+      2 - Delete player
       3 - Exit"
     user_input = gets.chomp.to_i
     system "clear"
@@ -195,7 +201,7 @@ class User < ActiveRecord::Base
     when 2
       self.deleted_a_favorite_tracked_player
     when 3
-      puts "Thanks, Goodbye!"
+      puts "Thanks, goodbye!"
     end
   end
 
