@@ -1,11 +1,11 @@
 require_relative '../config/environment.rb'
 ##Run file responsible for executing the actual program##
-
+system "clear"
 #welcome message
 
-p "Welcome to NBA Player Stat Tracker!"
+puts "Welcome to NBA Player Stat Tracker!"
 sleep 1
-p "We make it easy to track your favorite players stats through the NBA season."
+puts "We make it easy to track your favorite player's stats throughout the NBA season."
 User.user_authentication
 # sleep 1
 # player_query = User.full_user_input_and_search
