@@ -149,7 +149,6 @@ class User < ActiveRecord::Base
     else
       test.each do |player_id|
         lookup_player = Player.find_by(id:player_id)
-        puts lookup_player.class
         player_hash = {}
         player_hash[:first_name] = lookup_player.first_name
         player_hash[:last_name] = lookup_player.last_name
@@ -158,6 +157,8 @@ class User < ActiveRecord::Base
         PlayerStat.combined_stats(sorted_data)
         team_num =  Player.search_player_api_return_team_id(player_hash)
         PlayerStat.player_team_record(team_num)
+        player_id_array = Player.get_all_team_player_ids(team_num)
+        PlayerStat.rank_player_against_team(player_id_array,player_id)
       end
       self.user_option_menu
     end

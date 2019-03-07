@@ -13,4 +13,4 @@ gem "table_print"
 gem "terminal-table"
 gem "colorize"
 gem 'catpix'
-
+gem 'rmagick'
