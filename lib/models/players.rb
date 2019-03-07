@@ -33,9 +33,9 @@ class Player < ActiveRecord::Base
   end
 
   #gets all players for a team
-  def get_all_team_players(team_id)
+  def self.get_all_team_player_ids(team_id)
     response_string = RestClient.get("https://www.balldontlie.io/api/v1/players?&per_page=3100")
-    player_array = JSON.parse(response_string)
+    player_array = JSON.parse(response_string)["data"]
 
     team_player_ids = []
     player_array.each do |player|

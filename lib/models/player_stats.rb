@@ -13,7 +13,7 @@ class PlayerStat < ActiveRecord::Base
   ##Combines last game and season stats and prints as a table
   def self.combined_stats(player_stats)
     player_name = "#{player_stats[0]["player"]["first_name"]} #{player_stats[0]["player"]["last_name"]}"
-    p "Latest stats for #{player_name}:"
+    puts   "Latest stats for #{player_name}:"
     game_data = {}
     game_data[:pts] = [player_stats[0]["pts"]]
     game_data[:ast] = [player_stats[0]["ast"]]
@@ -139,9 +139,90 @@ class PlayerStat < ActiveRecord::Base
         end
       end
       team_record = "#{team_wins} - #{team_losses}"
-      p "#{team_name}: #{team_record}"
-      p "Last game: #{last_game_status} (#{last_game_score}) vs. #{last_game_opponent} on #{last_game_date}"
+      puts "#{team_name}: #{team_record}"
+      puts "Last game: #{last_game_status} (#{last_game_score}) vs. #{last_game_opponent} on #{last_game_date}"
   end
+
+
+  #ranks player against other teams after taking in argument of player_ids in array and a player_id you want to rank
+  def self.rank_player_against_team(player_id_array, player_id_to_rank)
+    api_url = "https://www.balldontlie.io/api/v1/stats?seasons[]=2018"
+
+    #iteate through array and append string for correct call
+    player_id_array.each do |player_id|
+      api_url << "&player_ids[]=#{player_id}"
+    end
+
+    #call_api with updated string
+    response_string = RestClient.get(api_url)
+    player_array = JSON.parse(response_string)["data"]
+
+  # #iterate throuhg repsonse and put all (1) ids, and (2) each stat(pts,blk,reb, assist) into an Hash
+
+  team_rank_hash = {}
+  player_array.each do |player|
+    team_rank_hash[player["player"]["id"].to_s] = {:pts => 0, :ast=> 0, :reb => 0, :stl => 0, :blk => 0, :games_played => 0}
+    ##figure out how to iterate and add each players stats to this array
+  end
+
+  #call api for each player and add their season totals to hash
+  team_rank_hash.each do |player_id, values|
+    response_string = RestClient.get("https://www.balldontlie.io/api/v1/stats?seasons[]=2018&player_ids[]=#{player_id}&per_page=500")
+    player_data = JSON.parse(response_string)["data"]
+
+    player_data.each do |game|
+      values[:pts] += game["pts"] unless game["pts"] == nil
+      values[:blk] += game["blk"] unless game["blk"] == nil
+      values[:ast] += game["ast"] unless game["ast"] == nil
+      values[:reb] += game["reb"] unless game["reb"] == nil
+      values[:stl] += game["stl"] unless game["stl"] == nil
+      values[:games_played] +=1
+    end
+  end
+
+  #Translate team hash into season averages
+  team_rank_hash.each do |player_id, values|
+    values[:pts] = (values[:pts]/values[:games_played].to_f).round(1)
+    values[:blk] = (values[:blk]/values[:games_played].to_f).round(1)
+    values[:ast] = (values[:ast]/values[:games_played].to_f).round(1)
+    values[:reb] = (values[:reb]/values[:games_played].to_f).round(1)
+    values[:stl] = (values[:stl]/values[:games_played].to_f).round(1)
+  end
+
+  #create ranking for each player -- How to iterate through and rank
+  #iterate through and sort by each of the variables, then create an array based on taht rank
+
+  #rank team by points
+  ranked_pts = team_rank_hash.sort_by {|key,value| -value[:pts]}
+  pts_rank_array = []
+  ranked_pts.each {|player_id, values| pts_rank_array << player_id}
+  #rank team by ast
+  ranked_ast = team_rank_hash.sort_by {|key,value| -value[:ast]}
+  ast_rank_array = []
+  ranked_ast.each {|player_id, values| ast_rank_array << player_id}
+  #rank by reb
+  ranked_reb = team_rank_hash.sort_by {|key,value| -value[:reb]}
+  reb_rank_array = []
+  ranked_reb.each {|player_id, values| reb_rank_array << player_id}
+  #rank by blk
+  ranked_blk = team_rank_hash.sort_by {|key,value| -value[:blk]}
+  blk_rank_array = []
+  ranked_blk.each {|player_id, values| blk_rank_array << player_id}
+  #rank by stl
+  ranked_stl = team_rank_hash.sort_by {|key,value| -value[:stl]}
+  stl_rank_array = []
+  ranked_stl.each {|player_id, values| stl_rank_array << player_id}
+
+  player_pts_rank = pts_rank_array.index(player_id_to_rank.to_s)+1
+  player_ast_rank = ast_rank_array.index(player_id_to_rank.to_s)+1
+  player_reb_rank = reb_rank_array.index(player_id_to_rank.to_s)+1
+  player_blk_rank = blk_rank_array.index(player_id_to_rank.to_s)+1
+  player_stl_rank = stl_rank_array.index(player_id_to_rank.to_s)+1
+
+  puts "Team rank: pts: #{player_pts_rank}, ast: #{player_ast_rank}, reb: #{player_reb_rank}, blk: #{player_blk_rank}, stl: #{player_stl_rank}"
+
+  end
+end
 
   ##test news api ## delete before push
   # def self.player_news
@@ -167,5 +248,3 @@ class PlayerStat < ActiveRecord::Base
   #   p article_hash
   #
   #   #puts response_json_cleaner
-  #   puts "hi"
-end
