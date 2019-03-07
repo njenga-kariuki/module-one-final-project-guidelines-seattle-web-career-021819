@@ -94,7 +94,7 @@ class PlayerStat < ActiveRecord::Base
       last_game_status = nil
       last_game_opponent = nil
       last_game_score = nil
-      last_game_date = last_game_data["date"].to_date.strftime("%a, %b-%d")
+      last_game_date = last_game_data["date"].to_date.strftime("%A, %b-%d")
 
       #loop to get team name
       if last_game_data["home_team"]["id"] == team_id
@@ -107,7 +107,7 @@ class PlayerStat < ActiveRecord::Base
       if last_game_data["home_team"]["id"] == team_id
           last_game_opponent = last_game_data["visitor_team"]["full_name"]
           last_game_score = "#{last_game_data["home_team_score"]} -#{last_game_data["visitor_team_score"]}"
-          if last_game_data["home_team_score"] >
+          if last_game_data["home_team_score"] > last_game_data["visitor_team_score"]
             last_game_status = "Win"
           else
             last_game_status = "Loss"
