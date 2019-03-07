@@ -142,6 +142,8 @@ class User < ActiveRecord::Base
         player_num =  Player.search_player_api_return_id(player_hash)
         sorted_data = PlayerStat.search_stats_by_player_id(player_num)
         PlayerStat.combined_stats(sorted_data)
+        team_num =  Player.search_player_api_return_team_id(player_hash)
+        PlayerStat.player_team_record(team_num)
       end
       self.user_option_menu
     end
