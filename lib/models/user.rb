@@ -97,11 +97,17 @@ class User < ActiveRecord::Base
   #method that asks new or existing users to start tracking Players
   def add_favorite_player
     player_name = User.full_user_input_and_search
-    track_player = Player.create(first_name: player_name[:first_name], last_name: player_name[:last_name])
-    UserPlayer.create(user_id:self.id, player_id:track_player.id)
-    p "We've added #{track_player.first_name} #{track_player.last_name} to your queue!"
-    p "Enter 1 to add more players, 2 to view stats, 3 to exit"
-    loop_favorite_player
+    player_id = Player.search_player_api_return_id(player_name)
+    if player_id == nil
+      p "Sorry invalid player name"
+      self.add_favorite_player
+    else
+      track_player = Player.create(first_name: player_name[:first_name], last_name: player_name[:last_name])
+      UserPlayer.create(user_id:self.id, player_id:track_player.id)
+      p "We've added #{track_player.first_name} #{track_player.last_name} to your queue!"
+      p "Enter 1 to add more players, 2 to view stats, 3 to exit"
+      self.loop_favorite_player
+    end
   end
 
   #after a user adds one player, a loop to let them add more
