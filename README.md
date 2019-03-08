@@ -3,6 +3,8 @@
 #### Njenga Kariuki and Matthew Shin
 ###### Project completed as part of Flatiron School Module 1 Curriculum
 
+![gif of video](keep_if.gif)
+
 ## FAQ
 #### 1. What is NBA Stat Tracker?
 A CLI program that enables users to stay up-to-date on their favorite NBA player’s stats (individual and team) and top news articles in one place. Stats and news articles refresh every 10 minutes.
