@@ -1,7 +1,7 @@
 # NBA Stat Tracker
 
 #### Njenga Kariuki and Matthew Shin
-###### Project completed as part of Flatiron School Module 1 Curriculum
+###### Project completed as part of [Flatiron School] (flatironschool.com) Module 1 Curriculum
 
 ![gif of video](keep_gif.gif)
 
