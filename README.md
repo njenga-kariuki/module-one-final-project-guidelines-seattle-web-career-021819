@@ -3,7 +3,7 @@
 #### Njenga Kariuki and Matthew Shin
 ###### Project completed as part of Flatiron School Module 1 Curriculum
 
-![gif of video](keep_if.gif)
+![gif of video](keep_gif.gif)
 
 ## FAQ
 #### 1. What is NBA Stat Tracker?
