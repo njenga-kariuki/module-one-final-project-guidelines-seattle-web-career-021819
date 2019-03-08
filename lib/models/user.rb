@@ -72,7 +72,9 @@ class User < ActiveRecord::Base
           PlayerStat.player_team_record(team_num)
           player_id_array = Player.get_all_team_player_ids(team_num)
           PlayerStat.rank_player_against_team(player_id_array,player_id)
+          puts ""
           PlayerStat.player_news(player_query)
+          puts ""
           self.loop_search
         end
     end
@@ -100,7 +102,9 @@ class User < ActiveRecord::Base
           PlayerStat.player_team_record(team_num)
           player_id_array = Player.get_all_team_player_ids(team_num)
           PlayerStat.rank_player_against_team(player_id_array,player_id)
+          puts ""
           PlayerStat.player_news(player_query)
+          puts ""
           self.loop_search
         end
     when 2
@@ -167,9 +171,10 @@ class User < ActiveRecord::Base
         PlayerStat.player_team_record(team_num)
         player_id_array = Player.get_all_team_player_ids(team_num)
         PlayerStat.rank_player_against_team(player_id_array,player_id)
-
+        puts ""
         ##NEW addition : news articles
         PlayerStat.player_news(player_hash)
+        puts ""
       end
       self.user_option_menu
     end
