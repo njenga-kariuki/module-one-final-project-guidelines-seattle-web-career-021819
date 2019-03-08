@@ -106,7 +106,7 @@ class PlayerStat < ActiveRecord::Base
       #loop to get last game win/loss
       if last_game_data["home_team"]["id"] == team_id
           last_game_opponent = last_game_data["visitor_team"]["full_name"]
-          last_game_score = "#{last_game_data["home_team_score"]} -#{last_game_data["visitor_team_score"]}"
+          last_game_score = "#{last_game_data["home_team_score"]} - #{last_game_data["visitor_team_score"]}"
           if last_game_data["home_team_score"] > last_game_data["visitor_team_score"]
             last_game_status = "Win"
           else
@@ -114,7 +114,7 @@ class PlayerStat < ActiveRecord::Base
           end
       else
         last_game_opponent = last_game_data["home_team"]["full_name"]
-        last_game_score = "#{last_game_data["visitor_team_score"]} -#{last_game_data["home_team_score"]}"
+        last_game_score = "#{last_game_data["visitor_team_score"]} - #{last_game_data["home_team_score"]}"
           if last_game_data["visitor_team_score"] > last_game_data["home_team_score"]
             last_game_status = "Win"
           else
@@ -146,6 +146,7 @@ class PlayerStat < ActiveRecord::Base
 
   #ranks player against other teams after taking in argument of player_ids in array and a player_id you want to rank
   def self.rank_player_against_team(player_id_array, player_id_to_rank)
+      puts "Let's see where they rank amongst their teammates (this will take around 10 seconds)..."
     api_url = "https://www.balldontlie.io/api/v1/stats?seasons[]=2018"
 
     #iteate through array and append string for correct call
@@ -189,10 +190,6 @@ class PlayerStat < ActiveRecord::Base
     values[:stl] = (values[:stl]/values[:games_played].to_f).round(1)
   end
 
-  #create ranking for each player -- How to iterate through and rank
-  #iterate through and sort by each of the variables, then create an array based on taht rank
-
-  #rank team by points
   ranked_pts = team_rank_hash.sort_by {|key,value| -value[:pts]}
   pts_rank_array = []
   ranked_pts.each {|player_id, values| pts_rank_array << player_id}
@@ -220,31 +217,24 @@ class PlayerStat < ActiveRecord::Base
   player_stl_rank = stl_rank_array.index(player_id_to_rank.to_s)+1
 
   puts "Team rank: pts: #{player_pts_rank}, ast: #{player_ast_rank}, reb: #{player_reb_rank}, blk: #{player_blk_rank}, stl: #{player_stl_rank}"
+  end
 
+
+  #Method to pull news articles for player from ESPN and Fox if they are available (will not show if player doesnt have)
+  def self.player_news(player_name)
+      url = 'https://newsapi.org/v2/everything?sources=espn,fox-sports&q=lebron&apiKey=3a6e774b673a4d78a91f2fae405fb71b'
+    req = open(url)
+    response_body = req.read
+    articles_hash = JSON.parse(response_body)["articles"]
+
+    sorted_articles = articles_hash.sort_by {|article| article["publishedAt"]}.reverse
+
+    if sorted_articles.count > 0
+      puts "Top news articles for #{player_name[:first_name]}:"
+      sorted_articles[0..5].map do |article|
+        puts "#{article["title"]} - #{article["url"].light_blue} (#{article["source"]["name"]}-#{article["publishedAt"].to_date.strftime("%b-%d")})" unless article["title"] == nil
+      end
+    else
+    end
   end
 end
-
-  ##test news api ## delete before push
-  # def self.player_news
-  #   # Init
-  #   # newsapi = News.new("3a6e774b673a4d78a91f2fae405fb71b")
-  #
-  #   # player_headlines = newsapi.get_everything(q: 'lebron',
-  #   #                                       sources: 'espn')
-  #
-  #   # player_headlines_clean = JSON.parse(player_headlines)
-  #
-  #   # url = 'https://newsapi.org/v2/everything?sources=espn&q=Lebron&sort_by=published_at.start=NOW-3DAYS&apiKey=3a6e774b673a4d78a91f2fae405fb71b'
-  #     url = 'https://newsapi.org/v2/everything?sources=espn,fox-sports&q=lebron&apiKey=3a6e774b673a4d78a91f2fae405fb71b'
-  #   req = open(url)
-  #   response_body = req.read
-  #   article_hash = {}
-  #   article_hash[:articles] = response_body
-  #
-  #
-  #   # response_body_cleaner.sort_by do |article|
-  #   #   article["publishedAt"]
-  #   # end
-  #   p article_hash
-  #
-  #   #puts response_json_cleaner

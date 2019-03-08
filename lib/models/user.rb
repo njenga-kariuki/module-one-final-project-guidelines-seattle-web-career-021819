@@ -122,7 +122,7 @@ class User < ActiveRecord::Base
         system "clear"
         puts "We've added #{track_player.first_name} #{track_player.last_name} to your queue!"
         puts "Enter one of the following numbers:
-          1 - Add more players
+          1 - Add another player
           2 - View player stats
           3 - Exit"
         self.loop_favorite_player
@@ -165,6 +165,9 @@ class User < ActiveRecord::Base
         PlayerStat.player_team_record(team_num)
         player_id_array = Player.get_all_team_player_ids(team_num)
         PlayerStat.rank_player_against_team(player_id_array,player_id)
+
+        ##NEW addition : news articles
+        PlayerStat.player_news(player_hash)
       end
       self.user_option_menu
     end
