@@ -147,9 +147,9 @@ class PlayerStat < ActiveRecord::Base
   #ranks player against other teams after taking in argument of player_ids in array and a player_id you want to rank
   def self.rank_player_against_team(player_id_array, player_id_to_rank)
       puts "Let's see where they rank amongst their teammates (this will take around 10 seconds)..."
-    api_url = "https://www.balldontlie.io/api/v1/stats?seasons[]=2018"
+    api_url = "https://www.balldontlie.io/api/v1/stats?seasons[]=2018&per_page=1200"
 
-    #iteate through array and append string for correct call
+    #iterate through array and append string for correct call
     player_id_array.each do |player_id|
       api_url << "&player_ids[]=#{player_id}"
     end
@@ -158,8 +158,7 @@ class PlayerStat < ActiveRecord::Base
     response_string = RestClient.get(api_url)
     player_array = JSON.parse(response_string)["data"]
 
-  # #iterate throuhg repsonse and put all (1) ids, and (2) each stat(pts,blk,reb, assist) into an Hash
-
+  # #iterate through repsonse and put all (1) ids, and (2) each stat(pts,blk,reb, assist) into an Hash
   team_rank_hash = {}
   player_array.each do |player|
     team_rank_hash[player["player"]["id"].to_s] = {:pts => 0, :ast=> 0, :reb => 0, :stl => 0, :blk => 0, :games_played => 0}
@@ -219,14 +218,13 @@ class PlayerStat < ActiveRecord::Base
   puts "Team rank: pts: #{player_pts_rank}, ast: #{player_ast_rank}, reb: #{player_reb_rank}, blk: #{player_blk_rank}, stl: #{player_stl_rank}"
   end
 
-
   #Method to pull news articles for player from ESPN and Fox if they are available (will not show if player doesnt have)
   def self.player_news(player_name)
-      url = 'https://newsapi.org/v2/everything?sources=espn,fox-sports&q=lebron&apiKey=3a6e774b673a4d78a91f2fae405fb71b'
+      url = "https://newsapi.org/v2/everything?sources=espn,fox-sports&q=#{player_name[:first_name]}-#{player_name[:last_name]}&apiKey=3a6e774b673a4d78a91f2fae405fb71b"
+
     req = open(url)
     response_body = req.read
     articles_hash = JSON.parse(response_body)["articles"]
-
     sorted_articles = articles_hash.sort_by {|article| article["publishedAt"]}.reverse
 
     if sorted_articles.count > 0
