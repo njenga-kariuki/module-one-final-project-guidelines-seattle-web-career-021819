@@ -8,7 +8,7 @@
 A CLI program that enables users to stay up-to-date on their favorite NBA player’s stats (individual and team) and top news articles in one place. Stats and news articles refresh every 10 minutes.
 
 #### 2. How does it work?
-After installing the program (see instructions below), users create an account and pick the players they would like to track. Each time users return to their program, they receive a summary of stats and news articles for their tracked players. At any time, users can add/ or delete players from their tracked list.   
+After installing the program (see instructions below), users create an account and pick the players they would like to track. Each time users return to their program, they receive a summary of stats and news articles for their tracked players. At any time, users can add or delete players from their tracked list.   
 
 If users do not want to create an account, they can still search players and view stats and top articles.
 
