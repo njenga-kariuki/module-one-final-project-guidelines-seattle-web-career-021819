@@ -145,8 +145,8 @@ class PlayerStat < ActiveRecord::Base
 
 
   #ranks player against other teams after taking in argument of player_ids in array and a player_id you want to rank
-  def self.rank_player_against_team(player_id_array, player_id_to_rank)
-      puts "Let's see where they rank amongst their teammates (this will take around 10 seconds)..."
+  def self.rank_player_against_team(player_id_array, player_id_to_rank,player_name)
+      puts "Let's see how #{player_name[:first_name]} ranks amongst his teammates (this will take around 10 seconds)..."
     api_url = "https://www.balldontlie.io/api/v1/stats?seasons[]=2018&per_page=1200"
 
     #iterate through array and append string for correct call
