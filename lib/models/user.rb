@@ -71,7 +71,7 @@ class User < ActiveRecord::Base
           team_num =  Player.search_player_api_return_team_id(player_query)
           PlayerStat.player_team_record(team_num)
           player_id_array = Player.get_all_team_player_ids(team_num)
-          PlayerStat.rank_player_against_team(player_id_array,player_id)
+          PlayerStat.rank_player_against_team(player_id_array,player_id,player_query)
           puts ""
           PlayerStat.player_news(player_query)
           puts ""
@@ -101,7 +101,7 @@ class User < ActiveRecord::Base
           team_num =  Player.search_player_api_return_team_id(player_query)
           PlayerStat.player_team_record(team_num)
           player_id_array = Player.get_all_team_player_ids(team_num)
-          PlayerStat.rank_player_against_team(player_id_array,player_id)
+          PlayerStat.rank_player_against_team(player_id_array,player_id,player_query)
           puts ""
           PlayerStat.player_news(player_query)
           puts ""
@@ -152,7 +152,6 @@ class User < ActiveRecord::Base
 
   #dashboard to show favorite players for an existing user
   def user_tracked_players
-    #query the userplayer table and loop through
     test = UserPlayer.where(user_id:self.id).pluck(:player_id)
 
     if test.count == 0
@@ -170,9 +169,9 @@ class User < ActiveRecord::Base
         team_num =  Player.search_player_api_return_team_id(player_hash)
         PlayerStat.player_team_record(team_num)
         player_id_array = Player.get_all_team_player_ids(team_num)
-        PlayerStat.rank_player_against_team(player_id_array,player_id)
+        PlayerStat.rank_player_against_team(player_id_array,player_id,player_hash)
         puts ""
-        ##NEW addition : news articles
+
         PlayerStat.player_news(player_hash)
         puts ""
       end
