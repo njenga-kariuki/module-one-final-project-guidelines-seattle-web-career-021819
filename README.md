@@ -3,7 +3,7 @@
 #### Njenga Kariuki and Matthew Shin
 ###### Project completed as part of Flatiron School Module 1 Curriculum
 
-##FAQ
+## FAQ
 #### 1. What is NBA Stat Tracker?
 A CLI program that enables users to stay up-to-date on their favorite NBA player’s stats (individual and team) and top news articles in one place. Stats and news articles refresh every 10 minutes.
 
@@ -12,8 +12,8 @@ After installing the program (see instructions below), users create an account a
 
 If users do not want to create an account, they can still search players and view stats and top articles.
 
-#### 3.
-What is the customer problem we are solving? Eliminating the need to juggle between stat and news sites/apps to stay updated on your favorite NBA players.
+#### 3. What is the customer problem we are solving?
+Eliminating the need to juggle between stat and news sites/apps to stay updated on your favorite NBA players.
 
 ## Installation Instructions
 #### OSX/Linux
@@ -34,11 +34,13 @@ Build a CLI program with the following components:
 #### Time allocated
 2.5 days
 
-##Diagrams
+## Diagrams
 #### Active Record Data Models
-![Data model](data_flow.png)
+![Data model](data_model.png)
 
 #### Program Data Flow
-![Data model](data_model.png)
+
+![Data model](data_flow.png)
+
 
 API hosted by https://www.balldontlie.io/ and https://newsapi.org
