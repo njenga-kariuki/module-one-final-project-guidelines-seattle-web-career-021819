@@ -229,7 +229,7 @@ class PlayerStat < ActiveRecord::Base
 
     if sorted_articles.count > 0
       puts "Top news articles for #{player_name[:first_name]}:"
-      sorted_articles[0..5].map do |article|
+      sorted_articles[0..4].map do |article|
         puts "#{article["title"]} - #{article["url"].light_blue} (#{article["source"]["name"]}-#{article["publishedAt"].to_date.strftime("%b-%d")})" unless article["title"] == nil
       end
     else
